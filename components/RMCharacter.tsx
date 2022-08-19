@@ -3,6 +3,7 @@ import {
   Text,
   Image,
   Pressable,
+  Modal,
   Dimensions,
   StyleSheet,
   SafeAreaView,
@@ -21,6 +22,7 @@ import { ICharacter } from '../types';
 function RMCharacter() {
 
   const [character, setCharacter] = useState<ICharacter[]>();
+  const [ showModal, setShowModal ] = useState(false)
   
   useEffect(() => {
     Api.get('character').then(
@@ -44,6 +46,10 @@ function RMCharacter() {
                 style={styles.card}
                 key={index}
               >
+                <Modal
+                  animationType='slide'
+                  visible={showModal}
+                />
                 <Image 
                   style={{ width: 100, height: 100 }}
                   source={{ uri: item.image }}
