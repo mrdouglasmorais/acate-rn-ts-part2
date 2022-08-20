@@ -12,7 +12,8 @@ import {
 
 import { 
   useEffect, 
-  useState 
+  useState,
+  useCallback 
 } from 'react';
 
 import Api from '../services/Api';
@@ -21,8 +22,9 @@ import { ICharacter } from '../types';
 
 function RMCharacter() {
 
-  const [character, setCharacter] = useState<ICharacter[]>();
+  const [ character, setCharacter ] = useState<ICharacter[]>();
   const [ showModal, setShowModal ] = useState(false)
+  const [ characterDetails, setCharacterDetails ] = useState<ICharacter[] | undefined>()
   
   useEffect(() => {
     Api.get('character').then(
@@ -31,6 +33,12 @@ function RMCharacter() {
       }
     )
   }, [])
+
+  const getDataCharacter = (id: Number) => {
+    const result: ICharacter[] | undefined = character?.filter( item => item.id === id )
+    setCharacterDetails(result)
+    console.log(characterDetails)
+  }
 
   return(
     <SafeAreaView
@@ -49,7 +57,30 @@ function RMCharacter() {
                 <Modal
                   animationType='slide'
                   visible={showModal}
-                />
+                  onRequestClose={
+                    () => setShowModal(!showModal)
+                  }
+                >
+                  <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#7B25F0'
+                  }}>
+                    {/* {
+                      character.find( item => item.id === selected )
+                    } */}
+                    <Text>
+                      {item.name}
+                    </Text>
+
+                    <Pressable
+                      onPress={ () => setShowModal(!showModal) }
+                    >
+                      <Text>Fechar Modal</Text>
+                    </Pressable>
+                  </View>
+                </Modal>
                 <Image 
                   style={{ width: 100, height: 100 }}
                   source={{ uri: item.image }}
@@ -72,6 +103,14 @@ function RMCharacter() {
                   >
                     {item.gender}
                   </Text>
+                  <Pressable
+                    onPress={ () => {
+                      getDataCharacter(item.id)
+                      // setShowModal(!showModal)
+                    } }
+                  >
+                    <Text> Ver mais </Text>
+                  </Pressable>
                 </View>
               </View>
             )
