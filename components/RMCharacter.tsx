@@ -13,7 +13,6 @@ import {
 import { 
   useEffect, 
   useState,
-  useCallback 
 } from 'react';
 
 import Api from '../services/Api';
