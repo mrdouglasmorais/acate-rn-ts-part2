@@ -23,7 +23,7 @@ function RMCharacter() {
 
   const [ character, setCharacter ] = useState<ICharacter[]>();
   const [ showModal, setShowModal ] = useState(false)
-  const [ characterDetails, setCharacterDetails ] = useState<ICharacter[] | undefined>()
+  const [ characterDetails, setCharacterDetails ] = useState<ICharacter>()
   
   useEffect(() => {
     Api.get('character').then(
@@ -34,9 +34,16 @@ function RMCharacter() {
   }, [])
 
   const getDataCharacter = (id: Number) => {
-    const result: ICharacter[] | undefined = character?.filter( item => item.id === id )
-    setCharacterDetails(result)
-    console.log(characterDetails)
+    const value: ICharacter[] | any = character?.filter( item => item.id === id )
+    
+    let parsed: any = {}
+
+    value.forEach(function (item: any) {
+      for (var i in item) {
+        parsed[i] = item[i];
+      }
+    });
+    setCharacterDetails(parsed)
   }
 
   return(
@@ -66,17 +73,13 @@ function RMCharacter() {
                     alignItems: 'center',
                     backgroundColor: '#7B25F0'
                   }}>
-                    {/* {
-                      character.find( item => item.id === selected )
-                    } */}
                     <Text>
-                      {item.name}
+                      {characterDetails?.name}
                     </Text>
-
                     <Pressable
                       onPress={ () => setShowModal(!showModal) }
                     >
-                      <Text>Fechar Modal</Text>
+                      <Text>Fechar</Text>
                     </Pressable>
                   </View>
                 </Modal>
@@ -105,7 +108,7 @@ function RMCharacter() {
                   <Pressable
                     onPress={ () => {
                       getDataCharacter(item.id)
-                      // setShowModal(!showModal)
+                      setShowModal(!showModal)
                     } }
                   >
                     <Text> Ver mais </Text>
